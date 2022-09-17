@@ -1,5 +1,7 @@
 package org.daimhim.gson.plus
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 
@@ -14,4 +16,10 @@ inline fun <reified T> String?.fromJson(): T {
 
 fun Any?.toJson(includeNulls: Boolean = true): String {
     return JSONUtil.toJson(this, includeNulls)
+}
+
+fun createGSON(init: (GsonBuilder) -> Unit): Gson {
+    val gsonBuilder = GsonBuilder()
+    init(gsonBuilder)
+    return gsonBuilder.create()
 }

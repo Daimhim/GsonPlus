@@ -13,6 +13,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
+
 /**
  * author : Zhangx
  * date : 2021/6/3 14:42
@@ -24,13 +28,18 @@ public class JSONUtil {
     public final static Gson GSON_NO_NULLS = createGSON(false);
 
     static Gson createGSON(boolean serializeNulls) {
-        GsonBuilder build = new GsonBuilder();
-        if (serializeNulls) {
-            build.serializeNulls()
-                    .setLongSerializationPolicy(LongSerializationPolicy.STRING)
-                    .registerTypeAdapter(String.class, new StringGSONAdapter());
-        }
-        return build.create();
+        return JSONUtilsKt.createGSON(new Function1<GsonBuilder, Unit>() {
+            @Override
+            public Unit invoke(GsonBuilder gsonBuilder) {
+                if (serializeNulls) {
+                    gsonBuilder
+                            .serializeNulls()
+                            .setLongSerializationPolicy(LongSerializationPolicy.STRING)
+                            .registerTypeAdapter(String.class, new StringGSONAdapter());
+                }
+                return null;
+            }
+        });
     }
 
     public static <K, V> Map<K, V> fromMapJson(String json, Class<K> key, Class<V> value) {
